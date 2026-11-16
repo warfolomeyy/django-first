@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Местная библиотека — Главная</h1>
+<p>Добро пожаловать в <em>LocalLibrary</em>, учебный веб-сайт на Django.</p>
+<h2>Динамический контент</h2>
+<p>В библиотеке имеются следующие записи:</p>
+<ul>
+    <li><strong>Книги:</strong> {{ num_books }}</li>
+    <li><strong>Экземпляры:</strong> {{ num_instances }}</li>
+    <li><strong>Доступные экземпляры:</strong> {{ num_instances_available }}</li>
+    <li><strong>Авторы:</strong> {{ num_authors }}</li>
+</ul>
+{% endblock %}
