@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Удалить книгу: {{ book }}</h1>
+
+{% if book.bookinstance_set.all %}
+<p>Вы не можете удалить эту книгу, пока не будут удалены все её экземпляры:</p>
+<ul>
+    {% for copy in book.bookinstance_set.all %}
+    <li>{{ copy.id }} ({{ copy.get_status_display }})</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Вы уверены, что хотите удалить эту книгу?</p>
+<form action="" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Да, удалить.">
+</form>
+{% endif %}
+{% endblock %}
