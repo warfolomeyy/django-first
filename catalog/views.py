@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Book, Author, BookInstance, Genre
 
 
@@ -12,6 +13,7 @@ def index(request):
     num_genres = Genre.objects.count()
     num_books_word = Book.objects.filter(title__icontains='рыбка').count()
 
+    # Количество посещений этого представления, подсчитанное в переменной сессии
     num_visits = request.session.get('num_visits', 0)
     num_visits += 1
     request.session['num_visits'] = num_visits
@@ -45,3 +47,28 @@ class AuthorListView(generic.ListView):
 
 class AuthorDetailView(generic.DetailView):
     model = Author
+
+
+class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
+    """Общее представление на основе классов со списком книг, выданных текущему пользователю."""
+    model = BookInstance
+    template_name = 'catalog/bookinstance_list_borrowed_user.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return (
+            BookInstance.objects.filter(borrower=self.request.user)
+            .filter(status__exact='o')
+            .order_by('due_back')
+        )
+
+
+class LoanedBooksAllListView(PermissionRequiredMixin, generic.ListView):
+    """Общее представление со списком всех выданных книг (только для библиотекарей)."""
+    model = BookInstance
+    permission_required = 'catalog.can_mark_returned'
+    template_name = 'catalog/bookinstance_list_borrowed_all.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return BookInstance.objects.filter(status__exact='o').order_by('due_back')
