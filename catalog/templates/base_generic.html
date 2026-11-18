@@ -38,14 +38,21 @@
             <hr>
             <ul class="sidebar-nav">
                 <li>Персонал</li>
-                {% if perms.catalog.can_mark_returned %}
                 <li><a href="{% url 'all-borrowed' %}">Все выданные книги</a></li>
+                {% if perms.catalog.add_genre %}
+                <li><a href="{% url 'genre-create' %}">Добавить жанр</a></li>
+                {% endif %}
+                {% if perms.catalog.add_language %}
+                <li><a href="{% url 'language-create' %}">Добавить язык</a></li>
                 {% endif %}
                 {% if perms.catalog.add_author %}
                 <li><a href="{% url 'author-create' %}">Добавить автора</a></li>
                 {% endif %}
                 {% if perms.catalog.add_book %}
                 <li><a href="{% url 'book-create' %}">Добавить книгу</a></li>
+                {% endif %}
+                {% if perms.catalog.add_bookinstance %}
+                <li><a href="{% url 'bookinstance-create' %}">Добавить экземпляр книги</a></li>
                 {% endif %}
             </ul>
             {% endif %}
